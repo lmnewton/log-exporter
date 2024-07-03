@@ -1,0 +1,12 @@
+services:
+  log-exporter:
+    build:
+     context: .
+     dockerfile: Dockerfile
+    ports:
+    - "127.0.0.1:8000:8000"
+    volumes:
+      - logs:/var/log/:ro
+volumes:
+  logs:
+    
