@@ -1,13 +1,22 @@
+import os
 from typing import Union
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse, StreamingResponse
+from .utils import fileutils
 
 app = FastAPI()
 
+log_dir = os.getenv("LOG_LOCATION", "/var/log")
+
+@app.get("/", include_in_schema=False)
+def swagger_redirect():
+    response = RedirectResponse(url='/docs')
+    return response
+
 @app.get("/logs/{file_name}")
-async def read_log(file_name: str, search_term: Union[str, None] = None, n: int = -1):
+def read_log(file_name: str, search_term: Union[str, None] = None, n: int = -1):
     try:
-        with open(f"/var/log/{file_name}", "r") as log_file:
-            return f"I found {file_name}"
+        return StreamingResponse(fileutils.read_file(f"{log_dir}/{file_name}", n), media_type="application/text")
     except FileNotFoundError:
         return "File does not exist."

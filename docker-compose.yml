@@ -1,12 +1,14 @@
 services:
   log-exporter:
+    environment:
+      LOG_LOCATION: "/logs"
     build:
      context: .
      dockerfile: Dockerfile
     ports:
     - "127.0.0.1:8000:8000"
     volumes:
-      - logs:/var/log/:ro
+      - /var/log/:/logs:ro
 volumes:
   logs:
     
