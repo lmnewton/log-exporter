@@ -17,6 +17,6 @@ def swagger_redirect():
 @app.get("/logs/{file_name}")
 def read_log(file_name: str, search_term: Union[str, None] = None, n: int = -1):
     try:
-        return StreamingResponse(fileutils.read_file(f"{log_dir}/{file_name}", n), media_type="application/text")
+        return StreamingResponse(fileutils.parse_file(f"{log_dir}/{file_name}", n, search_term), media_type="application/text")
     except FileNotFoundError:
         return "File does not exist."
