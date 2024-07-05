@@ -12,7 +12,7 @@ app = FastAPI(
 )
 
 log_dir = os.getenv("LOG_LOCATION", "/var/log")
-buffer = os.getenv("BUFFER_SIZE", 4096)
+buffer = int(os.getenv("BUFFER_SIZE", 4096))
 
 
 @app.get("/", include_in_schema=False)
