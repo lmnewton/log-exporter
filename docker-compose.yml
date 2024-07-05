@@ -2,6 +2,7 @@ services:
   log-exporter:
     environment:
       LOG_LOCATION: "/logs"
+      BUFFER_SIZE: 8192
     build:
      context: .
      dockerfile: Dockerfile

@@ -8,6 +8,19 @@ def parse_file(
     search_term: Union[str | None] = None,
     buffer_size: int = 4096,
 ) -> Generator[str, Any, None]:
+
+    """Opens and parses a file object from the bottom up by manipulating the file read pointer.
+
+    Args:
+        file_name (str): The full path of the file to be pulled from disk.
+        line_count (int): The number of lines from the bottom of the file to read.
+        search_term (Union[str  |  None], optional): The search term to match against. . Defaults to None.
+        buffer_size (int, optional): The size of the read buffer. Defaults to 4096.
+
+    Yields:
+        Generator[str, Any, None]: Generator which yields queried log lines.
+    """
+
     with open(file_name, "rb") as file_wrapper:
 
         # Move the pointer to the end of the file
@@ -22,12 +35,12 @@ def parse_file(
         while (
             current_position := file_wrapper.tell()
         ) != 0 and cumulative_count < line_count:
-            
+
             # Ensure we only read in as much as we need when we are on the last buffered read
             read_size = buffer_size
             if current_position < buffer_size:
                 read_size = current_position
-            
+
             # Ensure as we seek that we never attempt to seek to a negative index (top of file 0 is min)
             read_position = max(0, current_position - buffer_size)
             file_wrapper.seek(read_position, os.SEEK_SET)
@@ -44,17 +57,23 @@ def parse_file(
             if read_position > 0:
                 log_chunk.pop(0)
 
-                ## Track how much we have to scroll back to capture all the data.
+                # Track how much we have to scroll back to capture all the data.
                 scrollback = len(binary_data) - len(b"".join(log_chunk))
 
             while len(log_chunk) > 0:
                 log_chunk_elem = log_chunk.pop().decode("utf-8")
                 if search_term is None or search_term in log_chunk_elem:
+
+                    # Handling the case were we've lost the line break through processing.
+                    if not log_chunk_elem.endswith("\n"):
+                        log_chunk_elem += "\n"
+
                     yield log_chunk_elem
                     cumulative_count += 1
+
                 if cumulative_count >= line_count:
                     return
-                
+
             # Move the file pointer up from current location to the next read location
             new_position = max(scrollback, read_position - len(binary_data))
             file_wrapper.seek(new_position, os.SEEK_SET)

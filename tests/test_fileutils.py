@@ -31,39 +31,44 @@ def test_bufferedread():
     for line in lines:
         assert line.startswith("2024-07-04 13:47:44")
 
+
 def test_bufferedsearch():
     lines = []
     for line in parse_file("tests/resources/buffered.testlog", 1000, "QB"):
         lines.append(str(line).strip())
-    
+
     assert len(lines) == 2
+
 
 def test_limitedbufferedsearch():
     lines = []
     for line in parse_file("tests/resources/buffered.testlog", 1, "QB"):
         lines.append(str(line).strip())
-    
+
     assert len(lines) == 1
+
 
 def test_bufferedsinglehitsearch():
     lines = []
     for line in parse_file("tests/resources/buffered.testlog", 1000, "TR"):
         lines.append(str(line).strip())
-    
+
     assert len(lines) == 1
 
     for line in lines:
         assert line.startswith("2024-07-04 13:47:44")
 
+
 def test_bufferednohitsearch():
     lines = []
     for line in parse_file("tests/resources/buffered.testlog", 1000, "MKM"):
         lines.append(str(line))
-    
+
     assert len(lines) == 0
 
     for line in lines:
         assert line.startswith("2024-07-04 13:47:44")
+
 
 def test_nobuffersearch():
     lines = []
@@ -73,6 +78,7 @@ def test_nobuffersearch():
     assert len(lines) == 3
     assert lines == ["1 test", "21", "321"]
 
+
 def test_limitednobuffersearch():
     lines = []
     for line in parse_file("tests/resources/test.testlog", 2, "1"):
@@ -80,6 +86,7 @@ def test_limitednobuffersearch():
 
     assert len(lines) == 2
     assert lines == ["1 test", "21"]
+
 
 def test_crossbuffersearch():
     lines = []
