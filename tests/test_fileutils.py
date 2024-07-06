@@ -96,3 +96,13 @@ def test_crossbuffersearch():
     assert len(lines) == 23
     for line in lines:
         assert line.startswith("2024-07-04 13:47:44")
+
+
+def test_crossbuffersearch_smallbuffer():
+    lines = []
+    for line in parse_file("tests/resources/buffered.testlog", 50, "C", 300):
+        lines.append(str(line).strip())
+
+    assert len(lines) == 23
+    for line in lines:
+        assert line.startswith("2024-07-04 13:47:44")

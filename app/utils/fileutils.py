@@ -22,28 +22,29 @@ def parse_file(
     """
 
     with open(file_name, "rb") as file_wrapper:
-
-        # Move the pointer to the end of the file
-        file_wrapper.seek(0, os.SEEK_END)
         log_chunk = []
 
         # Keep track of how many lines we've pulled for response
         cumulative_count = 0
 
+        # Move the pointer to the end of the file
+        file_wrapper.seek(0, os.SEEK_END)
+        current_position = file_wrapper.tell()
+
+        # Keep track of mid-line buffer splits to ensure we captire the full lines.
         scrollback = 0
 
-        while (
-            current_position := file_wrapper.tell()
-        ) != 0 and cumulative_count < line_count:
+        while (current_position or scrollback != 0) and cumulative_count < line_count:
+            current_position = file_wrapper.tell()
 
             # Ensure we only read in as much as we need when we are on the last buffered read
-            read_size = buffer_size
             if current_position < buffer_size:
                 read_size = current_position
+            else:
+                read_size = buffer_size
 
-            # Ensure as we seek that we never attempt to seek to a negative index (top of file 0 is min)
-            read_position = max(0, current_position - buffer_size)
-            file_wrapper.seek(read_position, os.SEEK_SET)
+            # Move the pointer to either the buffer size or the remaining bytes to top of file.
+            file_wrapper.seek(-read_size, os.SEEK_CUR)
 
             # Read data into the byte buffer
             binary_data = file_wrapper.read(read_size)
@@ -51,29 +52,22 @@ def parse_file(
             # Split the data at line breaks
             log_chunk = binary_data.splitlines(True)
 
-            # We remove the last element in case of the read being caught mid-line.
-            # We only need to worry about this in the case of reads across multiple buffers.
-            scrollback = 0
-            if read_position > 0:
-                log_chunk.pop(0)
+            # If this is not the last read before EOF, we want to pop off a piece to use to size where the cursor should move.
+            if current_position - buffer_size > 0:
+                scrollback = len(log_chunk.pop(0))
+            else:
+                scrollback = 0
 
-                # Track how much we have to scroll back to capture all the data.
-                scrollback = len(binary_data) - len(b"".join(log_chunk))
-
+            # Loop through the chunks and determine if it should be returned or not.
             while len(log_chunk) > 0:
                 log_chunk_elem = log_chunk.pop().decode("utf-8")
                 if search_term is None or search_term in log_chunk_elem:
-
-                    # Handling the case were we've lost the line break through processing.
-                    if not log_chunk_elem.endswith("\n"):
-                        log_chunk_elem += "\n"
-
                     yield log_chunk_elem
                     cumulative_count += 1
 
                 if cumulative_count >= line_count:
                     return
 
-            # Move the file pointer up from current location to the next read location
-            new_position = max(scrollback, read_position - len(binary_data))
-            file_wrapper.seek(new_position, os.SEEK_SET)
+            # Move the file pointer up from current location to the next read location based on the length we've already read.
+            # Add the scrollback to ensure that we are covering the chunks we ignored in this iteration.
+            file_wrapper.seek(-len(binary_data) + scrollback, os.SEEK_CUR)
