@@ -1,1 +1,2 @@
 fastapi==0.111.0
+fastapi-pagination==0.12.26

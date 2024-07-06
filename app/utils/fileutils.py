@@ -1,5 +1,5 @@
 import os
-from typing import Any, Generator, Union
+from typing import List, Union
 
 
 def parse_file(
@@ -7,7 +7,7 @@ def parse_file(
     line_count: int,
     search_term: Union[str | None] = None,
     buffer_size: int = 4096,
-) -> Generator[str, Any, None]:
+) -> List[str]:
 
     """Opens and parses a file object from the bottom up by manipulating the file read pointer.
 
@@ -22,6 +22,8 @@ def parse_file(
     """
 
     with open(file_name, "rb") as file_wrapper:
+
+        lines = []
 
         # Keep track of how many lines we've pulled for response
         cumulative_count = 0
@@ -55,13 +57,16 @@ def parse_file(
             # Loop through the chunks and determine if it should be returned or not.
             while len(log_chunk) > 0:
                 log_chunk_elem = log_chunk.pop().decode("utf-8")
+
                 if search_term is None or search_term in log_chunk_elem:
-                    yield log_chunk_elem
+                    lines.append(log_chunk_elem)
                     cumulative_count += 1
 
                 if cumulative_count >= line_count:
-                    return
+                    return lines
 
             # Move the file pointer up from current location to the next read location based on the length we've already read.
             # Add the scrollback to ensure that we are covering the chunks we ignored in this iteration.
             file_wrapper.seek(-len(binary_data) + scrollback, os.SEEK_CUR)
+
+        return lines
