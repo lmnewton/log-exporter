@@ -22,26 +22,22 @@ def parse_file(
     """
 
     with open(file_name, "rb") as file_wrapper:
-        log_chunk = []
 
         # Keep track of how many lines we've pulled for response
         cumulative_count = 0
 
         # Move the pointer to the end of the file
         file_wrapper.seek(0, os.SEEK_END)
-        current_position = file_wrapper.tell()
 
         # Keep track of mid-line buffer splits to ensure we captire the full lines.
         scrollback = 0
 
-        while (current_position or scrollback != 0) and cumulative_count < line_count:
-            current_position = file_wrapper.tell()
+        while (
+            current_position := file_wrapper.tell() or scrollback != 0
+        ) and cumulative_count < line_count:
 
             # Ensure we only read in as much as we need when we are on the last buffered read
-            if current_position < buffer_size:
-                read_size = current_position
-            else:
-                read_size = buffer_size
+            read_size = min(buffer_size, current_position)
 
             # Move the pointer to either the buffer size or the remaining bytes to top of file.
             file_wrapper.seek(-read_size, os.SEEK_CUR)
