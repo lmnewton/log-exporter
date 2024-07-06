@@ -32,9 +32,7 @@ def parse_file(
         # Keep track of mid-line buffer splits to ensure we captire the full lines.
         scrollback = 0
 
-        while (
-            current_position := file_wrapper.tell() or scrollback != 0
-        ) and cumulative_count < line_count:
+        while current_position := file_wrapper.tell() or scrollback != 0:
 
             # Ensure we only read in as much as we need when we are on the last buffered read
             read_size = min(buffer_size, current_position)
