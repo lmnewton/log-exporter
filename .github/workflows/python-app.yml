@@ -14,7 +14,8 @@ permissions:
 
 jobs:
   build:
-
+    env:
+      READ_LOCATION: tests/resources
     runs-on: ubuntu-latest
 
     steps:
