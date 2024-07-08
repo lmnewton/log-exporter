@@ -1,1 +1,2 @@
-pytest==*
+pytest==8.2.2
+pytest-env==1.1.3

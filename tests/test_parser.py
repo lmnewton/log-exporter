@@ -1,4 +1,4 @@
-from app.utils.fileutils import parse_file
+from app.core.parser import parse_file
 
 
 def test_readfile():
