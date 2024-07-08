@@ -58,8 +58,13 @@ def read_log(
         Response: Returns a paged response from the server.
     """
 
+    if search_term is not None:
+        suffix = f" matching term '{search_term}'"
+    else:
+        suffix = ""
+
     logger.info(
-        f"Reading log {log_dir}/{file_name}. Returning last {lines_to_read} lines and retrieving term '{search_term}'."
+        f"Reading log {log_dir}/{file_name}. Returning last {lines_to_read} lines{suffix}."
     )
 
     file = f"{log_dir}/{file_name}"
