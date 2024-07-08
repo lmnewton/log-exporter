@@ -18,7 +18,7 @@ def parse_file(
         buffer_size (int, optional): The size of the read buffer. Defaults to 4096.
 
     Yields:
-        Generator[str, Any, None]: Generator which yields queried log lines.
+        List[str]: Returns a list of log lines.
     """
 
     with open(file_name, "rb") as file_wrapper:
