@@ -41,7 +41,7 @@ This will expose the service running on port 8000. The root endpoint redirects t
 ### Running Outside of a Container
 1. Clone the project. Initialize a virtual environment.
 2. Once running in the context of the virtual environment, install dependencies with `pip install /log-exporter/requirements.txt`.
-3. Run `fastapi dev main.py`.
+3. Run `fastapi dev app/main.py`.
 
 This will expose the service running locally on port 8000. The root endpoint redirects to a Swagger UI which documents the API.
 
