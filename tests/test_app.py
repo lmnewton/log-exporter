@@ -50,3 +50,12 @@ def test_read():
 
     body = response.json()
     assert body["total"] == 23
+
+
+def test_subdir_read():
+    subdir = "test/test.testlog"
+    response = client.get(f"/logs/{subdir}?lines_to_read=50&search_term=1")
+    assert response.status_code == 200
+
+    body = response.json()
+    assert body["total"] == 3

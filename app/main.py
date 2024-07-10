@@ -29,7 +29,7 @@ def swagger_redirect():
 
 
 @app.get(
-    "/logs/{file_name}",
+    "/logs/{file_name:path}",
     description="Invokes the log parser based on how many lines need to be read and which search terms are sought.\n\n**Note:** If both a line limit and the search term are defined, only the top n (where n is the line number) will be returned, even if there are more hits in the file.",
     response_model=Page,
 )
