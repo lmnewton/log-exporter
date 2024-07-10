@@ -7,18 +7,19 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.params import Query, Path
 from fastapi.responses import JSONResponse, RedirectResponse
 from .core import parser
-from .core.logging import logger
+from .core.logging import logger, startup_log
 from .core.validate import validate
+from .core.constants import READ_LOCATION, BUFFER_SIZE, READ_DEFAULT, BUFFER_DEFAULT
 from fastapi_pagination import Page, add_pagination, paginate
+
+log_dir = os.getenv(READ_LOCATION, READ_DEFAULT)
+buffer = int(os.getenv(BUFFER_SIZE, BUFFER_DEFAULT))
 
 app = FastAPI(
     title="LogExporter",
     description="Server-based API for searching and retrieving selective log data.",
+    on_startup=[startup_log],
 )
-
-READ_LOCATION = "READ_LOCATION"
-log_dir = os.getenv(READ_LOCATION, "/var/log")
-buffer = int(os.getenv("BUFFER_SIZE", 4096))
 
 
 @app.get("/", include_in_schema=False)

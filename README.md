@@ -29,13 +29,17 @@ This app requires docker and docker-compose to run in production mode.
 
 To deploy this project onto a server:
 1. Clone the project to the deployment location on the server.
-2. Run `docker-compose up`.
+2. Create a .env file to configure the application and put it in the same directory as the docker-compose file (the project root). Below are the recommended defaults:
+    ```
+    READ_LOCATION="/logs"
+    BUFFER_SIZE=8192
+    ```
+3. Run `docker-compose --env-file .env up`.
 
 This will expose the service running on port 8000. The root endpoint redirects to a Swagger UI which documents the API.
 
 #### Notes about container run mode
-- The default read buffer size is 8192. This can be changed by changing the environment variable in the docker-compose.yml file.
-- The logs are read across a **read-only** mount to the host filesystem located at `logs`.
+- The logs are read across a **read-only** mount to the host filesystem located at the configured location `READ_LOCATION`. If this is not set it will default to `/var/logs` which is not recommended in containerized mode as you will want to keep your container's logs in tact and separate from the host filesystem's logs.
 - If the code changes, make sure to run `docker-compose up --build` on start or `docker-compose build` before start. This setup does not auto-refresh and the image must be manually rebuilt.
 
 ### Running Outside of a Container
