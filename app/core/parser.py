@@ -6,7 +6,7 @@ def parse_file(
     file_name: str,
     line_count: int,
     search_term: Union[str | None] = None,
-    buffer_size: int = 4096,
+    buffer_size: int = 8192,
 ) -> List[str]:
 
     """Opens and parses a file object from the bottom up by manipulating the file read pointer.
@@ -48,8 +48,11 @@ def parse_file(
             # Split the data at line breaks
             log_chunk = binary_data.splitlines(True)
 
+            # [ISSUE #4] scrollback != buffer check ensures that if the scrollback is the size of the buffer
+            # The program does not get stuck in an endless loop.
+
             # If this is not the last read before EOF, we want to pop off a piece to use to size where the cursor should move.
-            if current_position - buffer_size > 0:
+            if current_position - buffer_size > 0 and scrollback != buffer_size:
                 scrollback = len(log_chunk.pop(0))
             else:
                 scrollback = 0

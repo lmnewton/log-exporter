@@ -106,3 +106,17 @@ def test_crossbuffersearch_smallbuffer():
     assert len(lines) == 23
     for line in lines:
         assert line.startswith("2024-07-04 13:47:44")
+
+
+def test_fullbuffer_onlastiteration():
+    lines = []
+    for line in parse_file("tests/resources/history.testlog", 51, "End-Date"):
+        lines.append(str(line).strip())
+
+    assert len(lines) == 51
+
+    lines = []
+    for line in parse_file("tests/resources/history.testlog", 51, "Start-Date"):
+        lines.append(str(line).strip())
+
+    assert len(lines) == 51
