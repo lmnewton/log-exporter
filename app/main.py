@@ -21,7 +21,6 @@ app = FastAPI(
     on_startup=[startup_log],
 )
 
-
 @app.get("/", include_in_schema=False)
 def swagger_redirect():
     logger.info("Redirecting to Swagger UI from root.")
@@ -30,7 +29,7 @@ def swagger_redirect():
 
 
 @app.get(
-    "/logs/{file_name}",
+    "/logs/{file_name:path}",
     description="Invokes the log parser based on how many lines need to be read and which search terms are sought.\n\n**Note:** If both a line limit and the search term are defined, only the top n (where n is the line number) will be returned, even if there are more hits in the file.",
     response_model=Page,
 )
@@ -41,7 +40,7 @@ def read_log(
     ),
     lines_to_read: int = Query(
         ...,
-        description="The number of lines to read from the bottom of the file upwards.",
+        description="If a search term is specified, this parameter indicates that the first n hits starting from the bottom of the file and searching upwards will be returned.\n\nIf no search term is provided, this parameter determines how many lines will be returned from the bottom of the file upwards.",
     ),
     search_term: Union[str, None] = Query(
         None,

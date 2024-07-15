@@ -21,7 +21,7 @@ This application only has two configurations and both are set with sensible defa
 | Env Variable      | Description | Default     |
 | :---        |    :----   |          ---: |
 | READ_LOCATION      | Where on the filesystem the API should be looking for logs       | `/var/logs`   |
-| BUFFER_SIZE   | The size of the file chunk to read into memory for processing at a time        | 4096 (bytes) |
+| BUFFER_SIZE   | The size of the file chunk to read into memory for processing at a time        | 8192 (bytes) |
 
 ### Running in a Container
 
@@ -45,12 +45,12 @@ This will expose the service running on port 8000. The root endpoint redirects t
 ### Running Outside of a Container
 1. Clone the project. Initialize a virtual environment.
 2. Once running in the context of the virtual environment, install dependencies with `pip install /log-exporter/requirements.txt`.
-3. Run `fastapi dev main.py`.
+3. Run `fastapi dev app/main.py`.
 
 This will expose the service running locally on port 8000. The root endpoint redirects to a Swagger UI which documents the API.
 
 #### Notes about local run mode
-- The default read buffer size is 4096. This can be changed by setting an environment variable locally.
+- The default read buffer size is 8192. This can be changed by setting an environment variable locally.
 - The logs are read from `/var/logs` on the underlying system.
 - If the code changes, the changes will be redeployed automatically as long as the server is still running.
 
