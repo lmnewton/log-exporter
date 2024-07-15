@@ -13,7 +13,7 @@ def parse_file(
 
     Args:
         file_name (str): The full path of the file to be pulled from disk.
-        line_count (int): The number of lines from the bottom of the file to read.
+        line_count (int): The number of lines to return, reading from the bottom.
         search_term (Union[str  |  None], optional): The search term to match against. . Defaults to None.
         buffer_size (int, optional): The size of the read buffer. Defaults to 4096.
 

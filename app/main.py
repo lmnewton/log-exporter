@@ -40,7 +40,7 @@ def read_log(
     ),
     lines_to_read: int = Query(
         ...,
-        description="The number of lines to read from the bottom of the file upwards.",
+        description="If a search term is specified, this parameter indicates that the first n hits starting from the bottom of the file and searching upwards will be returned.\n\nIf no search term is provided, this parameter determines how many lines will be returned from the bottom of the file upwards.",
     ),
     search_term: Union[str, None] = Query(
         None,
