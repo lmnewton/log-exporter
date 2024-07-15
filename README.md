@@ -50,6 +50,7 @@ This will expose the service running on port 8000. The root endpoint redirects t
 This will expose the service running locally on port 8000. The root endpoint redirects to a Swagger UI which documents the API.
 
 #### Notes about local run mode
+- This service is built to use Python 3.12. It has not been tested for earlier versions and is confirmed not to work for versions < 3.10.
 - The default read buffer size is 8192. This can be changed by setting an environment variable locally.
 - The logs are read from `/var/logs` on the underlying system.
 - If the code changes, the changes will be redeployed automatically as long as the server is still running.
