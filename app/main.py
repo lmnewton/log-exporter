@@ -18,7 +18,7 @@ app = FastAPI(
 
 READ_LOCATION = "READ_LOCATION"
 log_dir = os.getenv(READ_LOCATION, "/var/log")
-buffer = int(os.getenv("BUFFER_SIZE", 4096))
+buffer = int(os.getenv("BUFFER_SIZE", 8192))
 
 
 @app.get("/", include_in_schema=False)
